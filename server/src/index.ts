@@ -5,10 +5,16 @@ import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import pg from 'pg';
 
+import path from 'path';
+
 dotenv.config();
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 const app = express();
+
+
+// Serve static files from the 'public' folder
+app.use(express.static(path.join(__dirname, '../public')));
 
 // Prisma 7 setup with local driver adapter
 const connectionString = process.env.DATABASE_URL;
@@ -25,11 +31,6 @@ const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
-
-// Root route for health check
-app.get('/', (req, res) => {
-    res.send('Product Management API is running...');
-});
 
 // API Endpoints
 
@@ -143,6 +144,11 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
         error: 'Internal Server Error',
         message: err.message
     });
+});
+
+// Catch-all route for SPA
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
 app.listen(PORT, () => {

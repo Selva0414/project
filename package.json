@@ -1,0 +1,8 @@
+{
+    "name": "project-monolith",
+    "version": "1.0.0",
+    "scripts": {
+        "build": "cd client && npm install && npm run build && cd ../server && npm install && rm -rf public && mkdir public && cp -r ../client/dist/* ./public/ && npm run prisma:generate && npm run build",
+        "start": "cd server && npm start"
+    }
+}
